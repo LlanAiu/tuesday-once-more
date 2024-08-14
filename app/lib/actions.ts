@@ -37,6 +37,7 @@ export async function addProblem(state: State, data: FormData) {
 
     try {
         //upload to db or smthn
+        console.log(validated.data);
     } catch (error) {
         return {
             message: 'Failed to Create New Problem'

@@ -8,7 +8,7 @@ export default function SideBar(){
     ]
     
     return (
-        <>
+        <div className='relative bg-slate-200'>
             {links.map((link : {name: string, href: string}) => {
                 return (
                     <Link 
@@ -19,6 +19,6 @@ export default function SideBar(){
                     </Link>
                 );
             })}
-        </>
+        </div>
     );
 }
