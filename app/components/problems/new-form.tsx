@@ -6,8 +6,8 @@ import { useFormState } from "react-dom";
 
 export default function Form(){
     const initialState: State = {errors: {}, message: null};
-    // const [state, formAction] = useActionState(addProblem, initialState);
-    const [state, formAction] = useFormState(addProblem, initialState);
+    const [state, formAction] = useActionState(addProblem, initialState);
+    // const [state, formAction] = useFormState(addProblem, initialState);
     
     const [sliderValue, setSliderValue] = useState(5);
 
