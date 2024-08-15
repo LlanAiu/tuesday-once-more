@@ -12,10 +12,11 @@ const schema = z.object({
     difficulty: z.coerce.number(),
     solution: z.string(),
     notes: z.string().optional(),
-    lastSeen: z.date()
+    lastSeen: z.date(),
+    successRate: z.number()
 });
 
-const Create = schema.omit({id: true, lastSeen: true});
+const Create = schema.omit({id: true, lastSeen: true, successRate: true});
 
 export async function addProblem(state: State, data: FormData) {
     console.log('add problem queued');

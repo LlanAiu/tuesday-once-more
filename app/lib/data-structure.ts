@@ -8,5 +8,6 @@ export type ProblemData = {
     difficulty: number,
     solution: string,
     notes?: string,
-    lastSeen: Date
+    lastSeen: Date,
+    successRate: number
 };

@@ -8,14 +8,15 @@ export default function SideBar(){
     ]
     
     return (
-        <div className='relative bg-slate-200'>
+        <div className='space-y-1 relative w-full h-full bg-slate-200'>
             {links.map((link : {name: string, href: string}) => {
                 return (
                     <Link 
                         key={link.name}
                         href={link.href}
+                        className='block py-2 rounded-md hover:bg-slate-300'
                     >
-                        <p>{link.name}</p>
+                        <p className='text-center text-ellipsis'>{link.name}</p>
                     </Link>
                 );
             })}
