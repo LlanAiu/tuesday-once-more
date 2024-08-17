@@ -1,6 +1,5 @@
-'use client'
 
-import ProblemDisplay from '@/app/components/review/problemDisplay';
+import ProblemDisplay from '@/app/components/review/problem-display';
 import { fetchProblemById } from '@/app/lib/data';
 
 export default async function Page({ params }: {params: {
