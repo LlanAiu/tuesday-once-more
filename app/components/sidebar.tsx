@@ -1,6 +1,12 @@
+'use client'
+
+import clsx from 'clsx';
 import Link from "next/link";
+import { usePathname } from 'next/navigation';
 
 export default function SideBar(){
+    const pathName = usePathname();
+
     const links = [
         {name: 'Home', href: '/home'},
         {name: 'Review', href: '/home/review'},
@@ -14,7 +20,9 @@ export default function SideBar(){
                     <Link 
                         key={link.name}
                         href={link.href}
-                        className='block py-2 rounded-md hover:bg-slate-300'
+                        className={clsx('block py-2 hover:bg-slate-300', {
+                            'bg-blue-300 hover:bg-blue-400': pathName === link.href
+                        })}
                     >
                         <p className='text-center text-ellipsis'>{link.name}</p>
                     </Link>
