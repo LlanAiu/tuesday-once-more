@@ -8,13 +8,13 @@ try {
     connection = await mysql.createConnection({
         host: process.env.SQL_HOST,
         user: process.env.SQL_USER,
-        password: process.env.SQL_PASSWORD,
-        database: process.env.SQL_DATABASE
+        password: process.env.SQL_PASSWORD
     });
 
+    await connection.query('CREATE DATABASE IF NOT EXISTS problem_db');
+    await connection.query('USE problem_db');
+
     const [result, field] = await connection.query(`
-        CREATE DATABASE IF NOT EXISTS problem_db;
-        USE problem_db;
         CREATE TABLE IF NOT EXISTS problems (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
@@ -28,10 +28,9 @@ try {
         );
     `);
 
-    
-
+    console.log(result);
+    console.log(field);
     console.log('Database and table created successfully');
-    
 } catch (err){
     console.log(err);
 }
