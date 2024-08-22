@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 
 export default function ReviewFilter(){
+    
     const[difficulty, setDifficulty] = useState(5);
 
     function handleChange(s: string){
