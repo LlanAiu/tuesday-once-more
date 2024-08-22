@@ -3,7 +3,8 @@
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createProblem, fetchProblemByFilterData } from './data';
+import { createProblem, createTopic, fetchProblemByFilterData } from './data';
+import { ProblemData } from './data-structure';
 
 const schema = z.object({
     title: z.string(),
@@ -80,13 +81,54 @@ export async function selectProblem(state: FilterState, data: FormData) {
         };
     }
 
-    const problem = await fetchProblemByFilterData(validated.data);
+    return await fetchProblemByFilterData(validated.data);
 }
 
 export type FilterState = {
     errors?: {
         topics?: string[],
         difficulty?: string[]
+    },
+    message?: string | null
+};
+
+const topicSchema = z.object({
+    name: z.string(),
+    id: z.number(),
+    description: z.string().optional()
+});
+
+const CreateTopic = topicSchema.omit({id: true});
+
+export async function addTopic(state: TopicState, data: FormData) {
+    const validated = CreateTopic.safeParse({
+        name: data.get('name'),
+        description: data.get('description')
+    });
+
+    if(!validated.success){
+        return {
+            errors: validated.error.flatten().fieldErrors,
+            message: 'Invalid Topic Data'
+        };
+    }
+
+    try {
+        await createTopic(validated.data);
+    } catch (err) {
+        return {
+            message: "Failed to Add Topic To Database"
+        };
+    }
+    
+    revalidatePath('/home/topics');
+    redirect('/home/topics');
+}
+
+export type TopicState = {
+    errors?: {
+        name?: string[],
+        description?: string[]
     },
     message?: string | null
 };

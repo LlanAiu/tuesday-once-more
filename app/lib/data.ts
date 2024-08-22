@@ -1,4 +1,4 @@
-import { FilterData, InputData, ProblemData } from './data-structure';
+import { FilterData, InputData, ProblemData, TopicInput } from './data-structure';
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
 
@@ -14,7 +14,7 @@ try {
     await connection.query('CREATE DATABASE IF NOT EXISTS problem_db');
     await connection.query('USE problem_db');
 
-    const [result, field] = await connection.query(`
+    await connection.query(`
         CREATE TABLE IF NOT EXISTS problems (
             id INT AUTO_INCREMENT PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
@@ -28,9 +28,15 @@ try {
         );
     `);
 
-    console.log(result);
-    console.log(field);
-    console.log('Database and table created successfully');
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS topics (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            description TEXT
+        );
+    `);
+
+    console.log('Database and Tables Created Successfully');
 } catch (err){
     console.log(err);
 }
@@ -57,7 +63,24 @@ export async function createProblem(problem: InputData){
 
         console.log(result);
         console.log(fields);
-        console.log('Problem created successfully with data: ' + problem.toString());
+        console.log('Problem created successfully with data: ' + JSON.stringify(problem));
+    } catch (error){
+        console.log(error);
+    }
+}
+
+export async function createTopic(topic: TopicInput){
+    try {
+        const [result, fields] = await connection.query(`
+            INSERT INTO topics (name, description)
+            VALUES (
+                '${topic.name}', 
+                ${topic.description ? `\'${topic.description}\'` : 'NULL'}
+            )
+        `);
+
+        console.log(result);
+        console.log('Topic created successfully with data: ' + JSON.stringify(topic));
     } catch (error){
         console.log(error);
     }

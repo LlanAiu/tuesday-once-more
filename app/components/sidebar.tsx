@@ -10,7 +10,8 @@ export default function SideBar(){
     const links = [
         {name: 'Home', href: '/home'},
         {name: 'Review', href: '/home/review'},
-        {name: 'Problem Set', href: '/home/problems'}
+        {name: 'Problem Set', href: '/home/problems'},
+        {name: 'Topics', href: '/home/topics'}
     ]
     
     return (

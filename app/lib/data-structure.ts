@@ -25,3 +25,14 @@ export type FilterData = {
     topics?: string[],
     difficulty?: number
 }
+
+export type TopicData = {
+    name: string,
+    id: number
+    description?: string
+}
+
+export type TopicInput = {
+    name: string,
+    description?: string
+}
