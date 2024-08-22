@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 
 const schema = z.object({
     title: z.string(),
-    id: z.string(),
+    id: z.number(),
     description: z.string(),
     example: z.string().optional(),
     difficulty: z.coerce.number(),

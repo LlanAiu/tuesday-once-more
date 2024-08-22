@@ -2,7 +2,7 @@
 
 export type ProblemData = {
     title: string,
-    id: string,
+    id: number,
     description: string,
     example?: string,
     difficulty: number,
