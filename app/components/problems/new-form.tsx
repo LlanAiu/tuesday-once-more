@@ -1,9 +1,11 @@
 'use client'
 
 import { addProblem, State } from "@/app/lib/actions";
+import { TopicData } from '@/app/lib/data-structure';
 import { useActionState, useState } from "react";
+import Search from './search';
 
-export default function Form(){
+export default function Form({ tags } : { tags: TopicData[] | undefined}) {
     const initialState: State = {errors: {}, message: null};
     const [state, formAction] = useActionState(addProblem, initialState);
     
@@ -100,6 +102,7 @@ export default function Form(){
                 </div>
                 <div>
                     <label htmlFor='tags'>Add Topic Tags</label>
+                    <Search tags={tags} />
                 </div>
                 <button className='float-right w-15 text-center p-2 mt-2 mr-4 rounded-md bg-slate-50 hover:bg-slate-300' type='submit'>Add</button>
             </form>

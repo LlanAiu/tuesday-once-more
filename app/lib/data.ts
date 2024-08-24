@@ -155,11 +155,27 @@ export async function fetchProblemById(id: number){
     }
 }
 
+export async function fetchAllTopics(){
+    try {
+        const [result, fields] = await connection.query({
+            sql: 'SELECT * FROM topics'
+        });
+
+        console.log(result);
+
+        return (result as Array<TopicData>);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export async function searchTopicByName(name: string){
     try {
         const [result, fields] = await connection.query({
             sql: `SELECT * FROM topics WHERE name LIKE '${name}%'`
         });
+
+        console.log(result);
 
         return (result as Array<TopicData>);
     } catch (error) {
