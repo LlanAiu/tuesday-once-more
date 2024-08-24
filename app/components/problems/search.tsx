@@ -6,6 +6,7 @@ export default function Search({ name } : { name: string }) {
 
     const handleSearch = useDebouncedCallback((search: string) => {
         queryName = search;
+        
     });
 
     return (
@@ -16,7 +17,7 @@ export default function Search({ name } : { name: string }) {
                 placeholder={"Search" + name + "s"}
                 onChange={(e) => handleSearch(e.target.value)}
             />
-            
+
         </div>
     );
 }
