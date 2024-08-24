@@ -1,4 +1,4 @@
-import { FilterData, InputData, ProblemData, TopicInput } from './data-structure';
+import { FilterData, InputData, ProblemData, TopicData, TopicInput } from './data-structure';
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
 
@@ -33,6 +33,15 @@ try {
             id INT AUTO_INCREMENT PRIMARY KEY,
             name VARCHAR(255) NOT NULL,
             description TEXT
+        );
+    `);
+
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS links (
+            problem_id INT,
+            tag_id INT,
+            FOREIGN KEY (problem_id) REFERENCES problems(id),
+            FOREIGN KEY (tag_id) REFERENCES topics(id)
         );
     `);
 
@@ -141,6 +150,18 @@ export async function fetchProblemById(id: number){
         console.log(`successfully fetched problem with id: ${id}`);
 
         return (result as Array<ProblemData>)[0];
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function searchTopicByName(name: string){
+    try {
+        const [result, fields] = await connection.query({
+            sql: `SELECT * FROM topics WHERE name LIKE '${name}%'`
+        });
+
+        return (result as Array<TopicData>);
     } catch (error) {
         console.log(error);
     }

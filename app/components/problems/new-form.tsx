@@ -98,6 +98,9 @@ export default function Form(){
                         placeholder="Extra notes"
                     />
                 </div>
+                <div>
+                    <label htmlFor='tags'>Add Topic Tags</label>
+                </div>
                 <button className='float-right w-15 text-center p-2 mt-2 mr-4 rounded-md bg-slate-50 hover:bg-slate-300' type='submit'>Add</button>
             </form>
         </div>

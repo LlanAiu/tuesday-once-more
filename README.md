@@ -5,4 +5,4 @@ Full disclosure, this is a primarily an exploration so that I can learn more abo
 
 In terms of the actual project, it was based on my inability to cram study. Other features, in particualr the (will be weighted, eventually) randomization of problems, were mainly inspired by one of my favorite math competition practice sites - AMCTrivial (amctrivial.com)
 
-How does this work in deployment or production? Dunno; haven't thought about that much; I'll get there when I get there.
+How does this work in deployment or production? Dunno; haven't thought about that yet; I'll get there when I get there.
