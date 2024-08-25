@@ -5,7 +5,7 @@ import { TopicData } from '@/app/lib/data-structure';
 import { useActionState, useState } from "react";
 import Search from './search';
 
-export default function Form({ tags } : { tags: TopicData[] | undefined}) {
+export default function Form({ tags } : { tags: TopicData[]}) {
     const initialState: State = {errors: {}, message: null};
     const [state, formAction] = useActionState(addProblem, initialState);
     

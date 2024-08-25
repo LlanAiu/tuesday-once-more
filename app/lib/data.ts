@@ -166,6 +166,7 @@ export async function fetchAllTopics(){
         return (result as Array<TopicData>);
     } catch (error) {
         console.log(error);
+        return [];
     }
 }
 

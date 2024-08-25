@@ -30,6 +30,8 @@ export async function addProblem(state: State, data: FormData) {
         notes: data.get('notes')
     });
 
+    console.log("Selected topics:  " + data.get('topics'));
+
     if(!validated.success){
         console.log("validation error");
         return {
