@@ -1,5 +1,5 @@
 import { TopicData } from '@/app/lib/data-structure';
-import { useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import SearchResult from './search-result';
 
@@ -7,18 +7,16 @@ export default function Search ({tags} : {tags: TopicData[]}) {
     const originalTopics = tags;
     const emptyTags: TopicData[] = [];
     const [topics, setTopics] = useState(emptyTags);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const [selectedTopics, setSelectedTopics] = useState<TopicData[]>([]);
+    const inputRef = useRef(null);
+    useOutsideAlerter(inputRef, () => handleFocusBlur("BLUR", null));
 
-    let topicIDs: number[] = [];
-
-    function addTopic(topicID: number){
-        topicIDs.push(topicID);
-        console.log(topicIDs);
+    function addTopic(topic: TopicData){
+        setSelectedTopics((a) => [...a, topic]);
     }
 
-    function removeTopic(topicID: number){
-        topicIDs = topicIDs.filter(id => id !== topicID);
-        console.log(topicIDs);
+    function removeTopic(topic: TopicData){
+        setSelectedTopics((a) => a.filter(t => t.id !== topic.id));
     }
 
     const handleSearch = useDebouncedCallback((search: string) => {
@@ -44,11 +42,8 @@ export default function Search ({tags} : {tags: TopicData[]}) {
     }
 
     return (
-        <div
-            ref={inputRef}
-            onClick={(e) => inputRef.current?.focus()}
-            // Doesn't quite work the way I want it to, will look into it later
-        >
+        <div ref={inputRef}>
+            <text>{selectedTopics.map(t => t.name).join(", ")}</text>
             <input
                 id="topic-search"
                 className='flex-auto w-full text-wrap bg-slate-50 px-1.5 py-1 rounded-md'
@@ -59,13 +54,28 @@ export default function Search ({tags} : {tags: TopicData[]}) {
             <input
                 type="hidden"
                 name="topics"
-                value={topicIDs.join("/")}
+                value={selectedTopics.map(t => t.id).join("/")}
             />
             <div>
                 {topics?.map((topic) => (
-                    <SearchResult key={topic.id} topic={topic} addTopic={addTopic} removeTopic={removeTopic}/>
+                    <SearchResult key={topic.id} topic={topic} addTopic={addTopic} removeTopic={removeTopic} initialCheck={selectedTopics.includes(topic)}/>
                 ))}
             </div>
         </div>
     );
+}
+
+function useOutsideAlerter(ref: MutableRefObject<any>, callback: () => void){
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent){
+            if(ref.current && !ref.current.contains(event.target)){
+                callback();
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [ref]);
 }

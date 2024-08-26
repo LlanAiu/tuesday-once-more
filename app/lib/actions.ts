@@ -3,7 +3,7 @@
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { createProblem, createTopic, fetchProblemByFilterData } from './data';
+import { addLinkedTopics, createProblem, createTopic, fetchProblemByFilterData } from './data';
 import { ProblemData } from './data-structure';
 
 const schema = z.object({
@@ -30,7 +30,7 @@ export async function addProblem(state: State, data: FormData) {
         notes: data.get('notes')
     });
 
-    console.log("Selected topics:  " + data.get('topics'));
+    const topicsIDs = (data.get('topics') as string).split("/").map(Number);
 
     if(!validated.success){
         console.log("validation error");
@@ -42,6 +42,7 @@ export async function addProblem(state: State, data: FormData) {
 
     try {
         await createProblem(validated.data);
+        await addLinkedTopics(validated.data, topicsIDs);
     } catch (error) {
         return {
             message: 'Failed to Create New Problem'

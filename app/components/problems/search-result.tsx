@@ -1,26 +1,33 @@
 import { TopicData } from '@/app/lib/data-structure';
+import { useState } from 'react';
 
-export default function SearchResult({topic, addTopic, removeTopic} : {
+export default function SearchResult({topic, addTopic, removeTopic, initialCheck} : {
     topic: TopicData,
-    addTopic: (topicID: number) => void,
-    removeTopic: (topicID: number) => void
+    addTopic: (topicID: TopicData) => void,
+    removeTopic: (topicID: TopicData) => void
+    initialCheck: boolean
 }) {
     
-    function handleCheck(checked: boolean){
-        if(checked){
-            addTopic(topic.id);
+    const [checked, setChecked] = useState(initialCheck);
+    let override = initialCheck;
+
+    function handleCheck(){
+        setChecked((check) => !check);
+        override = !override;
+        if(override){
+            addTopic(topic);
+            console.log("added topic " + topic.name);
         } else {
-            removeTopic(topic.id);
+            removeTopic(topic);
+            console.log("removed topic " + topic.name);
         }
     }
     
     return (
         <div>
-            <input
-                type="checkbox"
-                onChange={(e) => handleCheck(e.target.checked)}
-            />
-            <p>{topic.name}</p>
+            <button type='button' onClick={handleCheck}>
+                {checked ? <p>✓ {topic.name}</p> : <p>+ {topic.name}</p>}
+            </button>
         </div>
     );
 }

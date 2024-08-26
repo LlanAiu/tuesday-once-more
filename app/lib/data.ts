@@ -71,7 +71,6 @@ export async function createProblem(problem: InputData){
         `);
 
         console.log(result);
-        console.log(fields);
         console.log('Problem created successfully with data: ' + JSON.stringify(problem));
     } catch (error){
         console.log(error);
@@ -180,6 +179,24 @@ export async function searchTopicByName(name: string){
 
         return (result as Array<TopicData>);
     } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function addLinkedTopics(problem: InputData, topics: number[]){
+    try {
+        for(let topic of topics){
+            await connection.query(`
+                INSERT INTO links (problem_id, tag_id)
+                VALUES (
+                    (SELECT id FROM problems WHERE title = '${problem.title}'),
+                    ${topic}
+                )
+            `);
+        }
+        
+        console.log('Successfully added linked topics');
+    } catch (error){
         console.log(error);
     }
 }
