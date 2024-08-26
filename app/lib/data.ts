@@ -3,6 +3,7 @@ import mysql from 'mysql2/promise';
 import 'dotenv/config';
 
 let connection : mysql.Connection;
+const PROBLEMS_PER_PAGE = 5;
 
 try {
     connection = await mysql.createConnection({
@@ -137,7 +138,6 @@ export async function fetchProblemByFilterData(data: FilterData){
     }
 }
 
-
 export async function fetchProblemById(id: number){
     
     try {
@@ -154,10 +154,62 @@ export async function fetchProblemById(id: number){
     }
 }
 
+export async function fetchProblemPages(query: string){
+    try {
+        const [result, fields] = await connection.query({
+            sql: 
+                `SELECT COUNT(*) FROM problems
+                WHERE title LIKE '%${query}%' OR description LIKE '%${query}%'`
+        });
+
+        console.log(result);
+        const totalProblems = (result as Array<Number>)[0];
+        return Math.ceil(totalProblems.valueOf() / PROBLEMS_PER_PAGE);
+    } catch(error) {
+        console.log(error);
+    }
+}
+
+export async function fetchProblemByPage(query: string, page: number){
+    try {
+        const [result, fields] = await connection.query({
+            sql: 
+                `SELECT * FROM problems
+                WHERE title LIKE '%${query}%' OR description LIKE '%${query}%'
+                LIMIT ${PROBLEMS_PER_PAGE} OFFSET ${PROBLEMS_PER_PAGE * (page - 1)}`
+        });
+
+        console.log(result);
+        return (result as Array<ProblemData>);
+    } catch (error){
+        console.log(error);
+        return [];
+    }
+}
+
 export async function fetchAllTopics(){
     try {
         const [result, fields] = await connection.query({
             sql: 'SELECT * FROM topics'
+        });
+
+        console.log(result);
+
+        return (result as Array<TopicData>);
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
+export async function fetchTopicsByProblem(id: number){
+    try {
+        const [result, fields] = await connection.query({
+            sql: `
+                SELECT * FROM topics
+                JOIN links ON topics.id = links.tag_id
+                WHERE links.problem_id = ${id}
+            `
         });
 
         console.log(result);

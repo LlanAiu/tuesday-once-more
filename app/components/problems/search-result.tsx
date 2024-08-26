@@ -24,8 +24,8 @@ export default function SearchResult({topic, addTopic, removeTopic, initialCheck
     }
     
     return (
-        <div>
-            <button type='button' onClick={handleCheck}>
+        <div className='bg-slate-50 hover:bg-slate-300 pl-2 py-1 rounded-sm'>
+            <button type='button' className='w-full text-left pl-2' onClick={handleCheck}>
                 {checked ? <p>✓ {topic.name}</p> : <p>+ {topic.name}</p>}
             </button>
         </div>

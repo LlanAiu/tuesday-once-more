@@ -2,6 +2,7 @@ import { TopicData } from '@/app/lib/data-structure';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import SearchResult from './search-result';
+import clsx from 'clsx';
 
 export default function Search ({tags} : {tags: TopicData[]}) {
     const originalTopics = tags;
@@ -42,11 +43,18 @@ export default function Search ({tags} : {tags: TopicData[]}) {
     }
 
     return (
-        <div ref={inputRef}>
-            <text>{selectedTopics.map(t => t.name).join(", ")}</text>
+        <div className='space-y-3' ref={inputRef}>
+            <text 
+                className={clsx('block mt-2 h-8 bg-slate-50 w-full px-1.5 py-1 rounded-md', {
+                    'text-gray-500' : selectedTopics.length === 0,
+                    'text-gray-800' : selectedTopics.length > 0
+                })}
+            >
+                {selectedTopics.length > 0 ? selectedTopics.map(t => t.name).join(", ") : "No Topics Selected"}
+            </text>
             <input
                 id="topic-search"
-                className='flex-auto w-full text-wrap bg-slate-50 px-1.5 py-1 rounded-md'
+                className='block w-full text-wrap bg-slate-50 px-1.5 py-1 rounded-md'
                 placeholder={"Search Topics"}
                 onChange={(e) => handleSearch(e.target.value)}
                 onFocus={(e) => handleFocusBlur("FOCUS", e.target.value)}
@@ -56,7 +64,7 @@ export default function Search ({tags} : {tags: TopicData[]}) {
                 name="topics"
                 value={selectedTopics.map(t => t.id).join("/")}
             />
-            <div>
+            <div className='relative bottom-2'>
                 {topics?.map((topic) => (
                     <SearchResult key={topic.id} topic={topic} addTopic={addTopic} removeTopic={removeTopic} initialCheck={selectedTopics.includes(topic)}/>
                 ))}

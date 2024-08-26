@@ -100,8 +100,10 @@ export default function Form({ tags } : { tags: TopicData[]}) {
                         placeholder="Extra notes"
                     />
                 </div>
-                <div>
-                    <label htmlFor='tags'>Add Topic Tags</label>
+                <div className='flex-col m-4'>
+                    <label className='flex-1 text-lg text-gray-600' htmlFor='tags'>
+                        <b>Topics</b>
+                    </label>
                     <Search tags={tags} />
                 </div>
                 <button className='float-right w-15 text-center p-2 mt-2 mr-4 rounded-md bg-slate-50 hover:bg-slate-300' type='submit'>Add</button>
