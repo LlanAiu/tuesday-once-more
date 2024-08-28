@@ -1,6 +1,7 @@
-import FilterHead from '@/app/components/problems/filter-head';
+
+import ProblemTable from '@/app/components/problems/problem-table';
 import { fetchProblemPages } from '@/app/lib/data';
-import { ProblemData } from '@/app/lib/data-structure';
+import Link from 'next/link';
 
 export default async function Page(){
 
@@ -11,10 +12,12 @@ export default async function Page(){
         <div className='m-2'>
             <title className='text-xl'><b>All Problems</b></title>
             <div>
-                <FilterHead />
+                <Link href='/problems/create'>
+                    <p>Add New Problem</p>
+                </Link>
             </div>
             <div>
-                {/* Problem List */}
+                <ProblemTable query={''} page={currentPage} />
             </div>
             <div>
                 {/* Pagination */}

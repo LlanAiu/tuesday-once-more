@@ -116,11 +116,12 @@ export async function fetchRandomProblem() {
 //Must finish tags first before finishing this function
 export async function fetchProblemByFilterData(data: FilterData){
     try {
-        let query = 'SELECT * FROM problems';
+        let query = `SELECT * FROM problems
+            JOIN links ON problems.id = links.problem_id`;
         if(data.topics || data.difficulty){
             query += ' WHERE';
             if(data.topics){
-                query += ` `;
+                query += `tag_id IN (${data.topics.join(',')})`;
                 query += data.difficulty ? 'AND' : '';
             }
             query += data.difficulty ? ` difficulty = ${data.difficulty}` : ''; 
@@ -206,7 +207,7 @@ export async function fetchTopicsByProblem(id: number){
     try {
         const [result, fields] = await connection.query({
             sql: `
-                SELECT * FROM topics
+                SELECT id, name, description FROM topics
                 JOIN links ON topics.id = links.tag_id
                 WHERE links.problem_id = ${id}
             `

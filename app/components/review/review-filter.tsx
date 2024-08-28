@@ -1,7 +1,11 @@
+'use client'
+
+import { TopicData } from '@/app/lib/data-structure';
 import { useState } from 'react';
+import Search from '../problems/search';
 
 
-export default function ReviewFilter(){
+export default function ReviewFilter({tags}: {tags: TopicData[]}){
     
     const[difficulty, setDifficulty] = useState(5);
 
@@ -15,12 +19,7 @@ export default function ReviewFilter(){
             <form className='block'>
                 <div className='m-2'>
                     <label className='block mb-4 text-slate-700' htmlFor='review-topics'><u>Select Topics</u></label>
-                    <select className='block mb-6' name='review-topics' id='review-topics' multiple>
-                        <option value='topic1'>Placeholder 1</option>
-                        <option value='topic2'>Placeholder 2</option>
-                        <option value='topic3'>Placeholder 3</option>
-                        <option value='topic4'>Placeholder 4</option>
-                    </select>
+                    <Search tags={tags}/>
                 </div>
                 <div className='m-2 mb-6'>
                     <label className='block text-slate-700' htmlFor='review-difficulty'><u>Select Difficulty</u></label>

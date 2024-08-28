@@ -4,7 +4,7 @@ import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { addLinkedTopics, createProblem, createTopic, fetchProblemByFilterData } from './data';
-import { ProblemData } from './data-structure';
+import { ProblemData, TopicData } from './data-structure';
 
 const schema = z.object({
     title: z.string(),
@@ -67,13 +67,15 @@ export type State = {
 
 
 const filterSchema = z.object({
-    topics: z.array(z.string()).optional(),
+    topics: z.array(z.number()).optional(),
     difficulty: z.number().optional()
 });
 
 export async function selectProblem(state: FilterState, data: FormData) {
+    const topics = (data.get('topics') as string).split("/").map(Number);   
+
     const validated = filterSchema.safeParse({
-        topics: data.get('topics'),
+        topics: topics,
         difficulty: data.get('difficulty')
     });
 
@@ -84,12 +86,18 @@ export async function selectProblem(state: FilterState, data: FormData) {
         };
     }
 
-    return await fetchProblemByFilterData(validated.data);
+    const problem = await fetchProblemByFilterData(validated.data);
+
+    if(!problem){
+        redirect('/home/problems');
+    }
+    revalidatePath(`/home/problems/${problem.id}`);
+    redirect(`/home/problems/${problem.id}`);
 }
 
 export type FilterState = {
     errors?: {
-        topics?: string[],
+        topics?: number[],
         difficulty?: string[]
     },
     message?: string | null

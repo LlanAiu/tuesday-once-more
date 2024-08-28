@@ -22,7 +22,7 @@ export type InputData = {
 }
 
 export type FilterData = {
-    topics?: string[],
+    topics?: number[],
     difficulty?: number
 }
 
