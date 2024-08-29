@@ -203,6 +203,21 @@ export async function fetchAllTopics(){
     }
 }
 
+export async function fetchTopics(query: string, page: number){
+    try {
+        const [result, fields] = await connection.query({
+            sql: `SELECT * FROM topics WHERE name LIKE '%${query}%' LIMIT ${PROBLEMS_PER_PAGE} OFFSET ${PROBLEMS_PER_PAGE * (page - 1)}`
+        });
+
+        console.log(result);
+
+        return (result as Array<TopicData>);
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+}
+
 export async function fetchTopicsByProblem(id: number){
     try {
         const [result, fields] = await connection.query({
@@ -232,6 +247,16 @@ export async function searchTopicByName(name: string){
 
         return (result as Array<TopicData>);
     } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function deleteTopicById(id: number){
+    try {
+        await connection.query(`DELETE FROM links WHERE tag_id = ${id}`);
+        await connection.query(`DELETE FROM topics WHERE id = ${id}`);
+        console.log('Successfully deleted topic with id: ' + id);
+    } catch (error){
         console.log(error);
     }
 }
