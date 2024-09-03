@@ -3,7 +3,7 @@
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { addLinkedTopics, createProblem, createTopic, deleteTopicById, fetchProblemByFilterData } from './data';
+import { addLinkedTopics, createProblem, createTopic, deleteTopicById, editTopicById, fetchProblemByFilterData } from './data';
 
 const schema = z.object({
     title: z.string(),
@@ -104,7 +104,7 @@ export type FilterState = {
 
 const topicSchema = z.object({
     name: z.string(),
-    id: z.number(),
+    id: z.coerce.number(),
     description: z.string().optional()
 });
 
@@ -131,6 +131,32 @@ export async function addTopic(state: TopicState, data: FormData) {
         };
     }
     
+    revalidatePath('/home/topics');
+    redirect('/home/topics');
+}
+
+export async function editTopic(state: TopicState, data: FormData){
+    const validated = topicSchema.safeParse({
+        name: data.get('name'),
+        description: data.get('description'),
+        id: data.get('id')
+    });
+
+    if(!validated.success){
+        return {
+            errors: validated.error.flatten().fieldErrors,
+            message: 'Invalid Topic Data'
+        };
+    }
+
+    try {
+        await editTopicById(validated.data);
+    } catch (err) {
+        return {
+            message: "Failed to Edit Topic"
+        };
+    }
+
     revalidatePath('/home/topics');
     redirect('/home/topics');
 }

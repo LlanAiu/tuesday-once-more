@@ -218,6 +218,20 @@ export async function fetchTopics(query: string, page: number){
     }
 }
 
+export async function fetchTopicById(id: number){
+    try {
+        const [result, fields] = await connection.query({
+            sql: `SELECT * FROM topics WHERE id = ${id}`
+        });
+
+        console.log(result);
+
+        return (result as Array<TopicData>)[0];
+    } catch (error){
+        console.log(error);
+    }
+}
+
 export async function fetchTopicsByProblem(id: number){
     try {
         const [result, fields] = await connection.query({
@@ -247,6 +261,20 @@ export async function searchTopicByName(name: string){
 
         return (result as Array<TopicData>);
     } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function editTopicById(topic: TopicData){
+    try {
+        await connection.query(`
+            UPDATE topics
+            SET name = '${topic.name}', description = '${topic.description}'
+            WHERE id = ${topic.id}
+        `);
+
+        console.log('Successfully edited topic with id: ' + topic.id);
+    } catch (error){
         console.log(error);
     }
 }
