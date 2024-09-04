@@ -9,28 +9,32 @@ export default function TopicForm() {
 
     return (
         <div>
-            <h1>Create New Topic</h1>
+            <h1 className='text-xl pl-2.5 pt-3.5 text-gray-800 mb-3'><b>Create New Topic</b></h1>
             <form action={formAction}>
-                <div>
-                    <label htmlFor='name'>Name</label>
-                    <input 
-                        id='name' 
-                        name='name' 
-                        type='text'
-                        placeholder='Name' 
-                        required
-                    />
+                <div className='space-y-4 m-4'>
+                    <div className='block space-y-2'>
+                        <label htmlFor='name' className='text-lg text-gray-600'><b>Name</b></label>
+                        <input 
+                            id='name' 
+                            name='name'
+                            className='w-full px-2 py-1.5 rounded-md' 
+                            type='text'
+                            placeholder='Name' 
+                            required
+                        />
+                    </div>
+                    <div className='block space-y-2'>
+                        <label htmlFor='description' className='text-lg text-gray-600'><b>Description</b></label>
+                        <textarea 
+                            id='description'
+                            name='description'
+                            className='w-full px-2 py-1.5 rounded-md'
+                            rows={2} 
+                            placeholder='Description'
+                        />
+                    </div>
+                    <button type='submit' className='p-2 rounded-md bg-slate-50 hover:bg-slate-200'>Create</button>
                 </div>
-                <div>
-                    <label htmlFor='description'>Description</label>
-                    <textarea 
-                        id='description'
-                        name='description'
-                        rows={2} 
-                        placeholder='Description'
-                    />
-                </div>
-                <button type='submit'>Create</button>
             </form> 
         </div>
     );
