@@ -23,7 +23,7 @@ export default function SearchBar({objectName} : {objectName: string}){
         <div>
             <input
                 type="text"
-                className='w-full p-1 rounded-md'
+                className='w-full p-2 rounded-md h-full'
                 onChange={(e) => {handleSearch(e.target.value)}}
                 placeholder={`Search ${objectName}...`}
                 defaultValue={searchParams.get('query')?.toString()}

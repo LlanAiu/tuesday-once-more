@@ -13,9 +13,9 @@ export default async function ProblemTable({query, page} : {query: string, page:
     }
     
     return (
-        <div>
+        <div className='space-y-2'>
             {problems.map((problem) => {
-                return <ProblemCard problem={problem} topics={problemTags.get(problem.id) || []}/>
+                return <ProblemCard key={problem.id} problem={problem} topics={problemTags.get(problem.id) || []}/>
             })}
         </div>
     );

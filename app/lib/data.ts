@@ -188,6 +188,17 @@ export async function fetchProblemByPage(query: string, page: number){
     }
 }
 
+export async function deleteProblemById(id: number){
+    try {
+        await connection.query(`DELETE FROM links WHERE problem_id = ${id}`);
+        await connection.query(`DELETE FROM problems WHERE id = ${id}`);
+        
+        console.log('Successfully deleted problem with id: ' + id);
+    } catch (error){
+        console.log(error);
+    }
+}
+
 export async function fetchAllTopics(){
     try {
         const [result, fields] = await connection.query({

@@ -22,7 +22,7 @@ export default function SideBar(){
                         key={link.name}
                         href={link.href}
                         className={clsx('block py-2 hover:bg-slate-300', {
-                            'bg-blue-200 hover:bg-blue-300': pathName === link.href
+                            'bg-blue-200 hover:bg-blue-300': (link.name === 'Home' && pathName === link.href) || (link.name !== 'Home' && pathName.includes(link.href))
                         })}
                     >
                         <p className='text-center text-ellipsis'>{link.name}</p>

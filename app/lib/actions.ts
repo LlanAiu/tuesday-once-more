@@ -3,7 +3,7 @@
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { addLinkedTopics, createProblem, createTopic, deleteTopicById, editTopicById, fetchProblemByFilterData } from './data';
+import { addLinkedTopics, createProblem, createTopic, deleteProblemById, deleteTopicById, editTopicById, fetchProblemByFilterData } from './data';
 
 const schema = z.object({
     title: z.string(),
@@ -48,6 +48,19 @@ export async function addProblem(state: State, data: FormData) {
         }
     }
     
+    revalidatePath('/home/problems');
+    redirect('/home/problems');
+}
+
+export async function deleteProblem(id: number) {
+    try {
+        await deleteProblemById(id);
+    } catch (err) {
+        return {
+            message: "Failed to Delete Problem"
+        };
+    }
+
     revalidatePath('/home/problems');
     redirect('/home/problems');
 }
