@@ -3,11 +3,11 @@
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { addLinkedTopics, createProblem, createTopic, deleteProblemById, deleteTopicById, editTopicById, fetchProblemByFilterData } from './data';
+import { addLinkedTopics, createProblem, createTopic, deleteProblemById, deleteTopicById, editProblembyId, editTopicById, fetchProblemByFilterData, removeLinkedTopics } from './data';
 
 const schema = z.object({
     title: z.string(),
-    id: z.number(),
+    id: z.coerce.number(),
     description: z.string(),
     example: z.string().optional(),
     difficulty: z.coerce.number(),
@@ -18,6 +18,7 @@ const schema = z.object({
 });
 
 const Create = schema.omit({id: true, lastSeen: true, successRate: true});
+const Edit = schema.omit({lastSeen: true, successRate: true});
 
 export async function addProblem(state: State, data: FormData) {
     const validated = Create.safeParse({
@@ -48,6 +49,42 @@ export async function addProblem(state: State, data: FormData) {
         }
     }
     
+    revalidatePath('/home/problems');
+    redirect('/home/problems');
+}
+
+export async function editProblem(state: State, data: FormData) {
+    const validated = Edit.safeParse({
+        id: data.get('id'),
+        title: data.get('title'),
+        description: data.get('description'),
+        example: data.get('example'),
+        difficulty: data.get('difficulty'),
+        solution: data.get('solution'),
+        notes: data.get('notes')
+    });
+
+    const newTopics = (data.get('added-topics') as string).split("/").map(Number);
+    const removedTopics = (data.get('removed-topics') as string).split("/").map(Number);
+    
+
+    if(!validated.success){
+        return {
+            errors: validated.error.flatten().fieldErrors,
+            message: 'Missing Required Fields'
+        };
+    }
+
+    try {
+        await editProblembyId(validated.data.id, validated.data);
+        await addLinkedTopics(validated.data, newTopics);
+        await removeLinkedTopics(validated.data.id, removedTopics);
+    } catch (err) {
+        return {
+            message: "Failed to Edit Problem"
+        };
+    }
+
     revalidatePath('/home/problems');
     redirect('/home/problems');
 }

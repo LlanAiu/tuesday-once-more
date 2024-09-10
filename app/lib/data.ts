@@ -188,6 +188,20 @@ export async function fetchProblemByPage(query: string, page: number){
     }
 }
 
+export async function editProblembyId(id: number, problem: InputData){
+    try {
+        await connection.query(`
+            UPDATE problems
+            SET title = '${problem.title}', description = '${problem.description}', example = '${problem.example}', difficulty = ${problem.difficulty}, solution = '${problem.solution}', notes = '${problem.notes}'
+            WHERE id = ${id}
+        `);
+
+        console.log('Successfully edited problem with id: ' + id);
+    } catch (error){
+        console.log(error);
+    }
+}
+
 export async function deleteProblemById(id: number){
     try {
         await connection.query(`DELETE FROM links WHERE problem_id = ${id}`);
@@ -313,6 +327,19 @@ export async function addLinkedTopics(problem: InputData, topics: number[]){
         }
         
         console.log('Successfully added linked topics');
+    } catch (error){
+        console.log(error);
+    }
+}
+
+export async function removeLinkedTopics(problem_id: number, topics: number[]){
+    try {
+        for(let topic of topics){
+            await connection.query(`
+                DELETE FROM links
+                WHERE problem_id = ${problem_id} AND tag_id = ${topic}
+            `);
+        }
     } catch (error){
         console.log(error);
     }
