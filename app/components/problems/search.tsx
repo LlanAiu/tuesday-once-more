@@ -4,11 +4,12 @@ import { useDebouncedCallback } from 'use-debounce';
 import SearchResult from './search-result';
 import clsx from 'clsx';
 
-export default function Search ({tags} : {tags: TopicData[]}) {
+export default function Search ({tags, initialTags} : {tags: TopicData[], initialTags?: TopicData[]}) {
     const originalTopics = tags;
     const emptyTags: TopicData[] = [];
+    const initial = initialTags ? initialTags : [];
     const [topics, setTopics] = useState(emptyTags);
-    const [selectedTopics, setSelectedTopics] = useState<TopicData[]>([]);
+    const [selectedTopics, setSelectedTopics] = useState<TopicData[]>(initial);
     const inputRef = useRef(null);
     useOutsideAlerter(inputRef, () => handleFocusBlur("BLUR", null));
 
@@ -66,7 +67,7 @@ export default function Search ({tags} : {tags: TopicData[]}) {
             />
             <div className='relative bottom-2'>
                 {topics?.map((topic) => (
-                    <SearchResult key={topic.id} topic={topic} addTopic={addTopic} removeTopic={removeTopic} initialCheck={selectedTopics.includes(topic)}/>
+                    <SearchResult key={topic.id} topic={topic} addTopic={addTopic} removeTopic={removeTopic} initialCheck={selectedTopics.map(t => t.id).includes(topic.id)}/>
                 ))}
             </div>
         </div>

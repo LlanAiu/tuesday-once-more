@@ -64,9 +64,11 @@ export async function editProblem(state: State, data: FormData) {
         notes: data.get('notes')
     });
 
-    const newTopics = (data.get('added-topics') as string).split("/").map(Number);
-    const removedTopics = (data.get('removed-topics') as string).split("/").map(Number);
+    const originalTopics = (data.get('original-topics') as string).split("/").map(Number);
+    const newTopics = (data.get('topics') as string).split("/").map(Number);
     
+    const addedTopics = newTopics.filter(topic => !originalTopics.includes(topic));
+    const removedTopics = originalTopics.filter(topic => !newTopics.includes(topic));
 
     if(!validated.success){
         return {
@@ -77,7 +79,7 @@ export async function editProblem(state: State, data: FormData) {
 
     try {
         await editProblembyId(validated.data.id, validated.data);
-        await addLinkedTopics(validated.data, newTopics);
+        await addLinkedTopics(validated.data, addedTopics);
         await removeLinkedTopics(validated.data.id, removedTopics);
     } catch (err) {
         return {

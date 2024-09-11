@@ -16,10 +16,8 @@ export default function SearchResult({topic, addTopic, removeTopic, initialCheck
         override = !override;
         if(override){
             addTopic(topic);
-            console.log("added topic " + topic.name);
         } else {
             removeTopic(topic);
-            console.log("removed topic " + topic.name);
         }
     }
     
