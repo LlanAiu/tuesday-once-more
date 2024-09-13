@@ -119,15 +119,19 @@ export type State = {
 
 const filterSchema = z.object({
     topics: z.array(z.number()).optional(),
-    difficulty: z.number().optional()
+    minDifficulty: z.coerce.number().optional(),
+    maxDifficulty: z.coerce.number().optional()
 });
 
 export async function selectProblem(state: FilterState, data: FormData) {
-    const topics = (data.get('topics') as string).split("/").map(Number);   
+    const topicString = data.get('topics') as string;
+    const topics = (topicString.length > 0) ? topicString.split("/").map(Number) : [];
+    console.log(topics);
 
     const validated = filterSchema.safeParse({
         topics: topics,
-        difficulty: data.get('difficulty')
+        minDifficulty: data.get('min-difficulty'),
+        maxDifficulty: data.get('max-difficulty')
     });
 
     if(!validated.success){
@@ -140,16 +144,18 @@ export async function selectProblem(state: FilterState, data: FormData) {
     const problem = await fetchProblemByFilterData(validated.data);
 
     if(!problem){
-        redirect('/home/problems');
+        redirect('/home/review');
+    } else {
+        revalidatePath(`/home/review/${problem.id}`);
+        redirect(`/home/review/${problem.id}`);
     }
-    revalidatePath(`/home/problems/${problem.id}`);
-    redirect(`/home/problems/${problem.id}`);
 }
 
 export type FilterState = {
     errors?: {
-        topics?: number[],
-        difficulty?: string[]
+        topics?: string[],
+        minDifficulty?: string[],
+        maxDifficulty?: string[]
     },
     message?: string | null
 };

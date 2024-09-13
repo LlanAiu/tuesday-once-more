@@ -67,7 +67,7 @@ export async function createProblem(problem: InputData){
                 '${problem.solution}', 
                 ${problem.notes ? `\'${problem.notes}\'` : 'NULL'}, 
                 DATE '${dateString}', 
-                ${problem.difficulty / 10}
+                ${(10 - problem.difficulty) / 10}
             )
         `);
 
@@ -113,20 +113,21 @@ export async function fetchRandomProblem() {
     }
 }
 
-//Must finish tags first before finishing this function
+
 export async function fetchProblemByFilterData(data: FilterData){
+    console.log(data);
     try {
-        let query = `SELECT * FROM problems
-            JOIN links ON problems.id = links.problem_id`;
-        if(data.topics || data.difficulty){
-            query += ' WHERE';
-            if(data.topics){
-                query += `tag_id IN (${data.topics.join(',')})`;
-                query += data.difficulty ? 'AND' : '';
-            }
-            query += data.difficulty ? ` difficulty = ${data.difficulty}` : ''; 
+        let query = `SELECT id, title, description, example, difficulty, solution, notes, lastSeen, successRate 
+            FROM problems
+            LEFT JOIN links 
+            ON problems.id = links.problem_id
+            WHERE `;
+        if(data.topics && data.topics.length > 0){
+            query += `tag_id IN (${data.topics.join(',')}) AND `;
         }
-        query += 'ORDER BY RAND() LIMIT 1';
+        query += `difficulty >= ${data.minDifficulty} AND difficulty <= ${data.maxDifficulty}`;
+
+        query += ' ORDER BY RAND() LIMIT 1';
 
         const [result, fields] = await connection.query({
             sql: query,

@@ -23,7 +23,8 @@ export type InputData = {
 
 export type FilterData = {
     topics?: number[],
-    difficulty?: number
+    minDifficulty?: number,
+    maxDifficulty?: number
 }
 
 export type TopicData = {
