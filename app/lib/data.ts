@@ -203,6 +203,23 @@ export async function editProblembyId(id: number, problem: InputData){
     }
 }
 
+export async function updateProblemDate(id: number){
+    let today = new Date();
+    let dateString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+    try {
+        await connection.query(`
+           UPDATE problems
+           SET lastSeen = '${dateString}'
+           WHERE id = ${id}
+        `);
+
+        console.log('Successfully updated date for problem with id: ' + id);
+    } catch(error){
+        console.log(error);
+    }
+}
+
 export async function deleteProblemById(id: number){
     try {
         await connection.query(`DELETE FROM links WHERE problem_id = ${id}`);
