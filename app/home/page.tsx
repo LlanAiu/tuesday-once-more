@@ -1,10 +1,17 @@
+import { fetchStats, updateStreak } from '../lib/data';
 
 
-export default function Page(){
+export default async function Page(){
+
+    await updateStreak();
+    const stats = await fetchStats();
 
     return (
         <>
             <h1>Home</h1>
+            <div>
+                <h2>Statistics</h2>
+            </div>
             <div>
                 <h2>Review</h2>
             </div>

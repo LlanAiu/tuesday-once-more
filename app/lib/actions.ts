@@ -3,7 +3,7 @@
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { addLinkedTopics, createProblem, createTopic, deleteProblemById, deleteTopicById, editProblembyId, editTopicById, fetchProblemByFilterData, removeLinkedTopics } from './data';
+import { addLinkedTopics, createProblem, createTopic, deleteProblemById, deleteTopicById, editProblembyId, editTopicById, fetchProblemByFilterData, incrementStreak, removeLinkedTopics } from './data';
 
 const schema = z.object({
     title: z.string(),
@@ -142,6 +142,7 @@ export async function selectProblem(state: FilterState, data: FormData) {
     }
 
     const problem = await fetchProblemByFilterData(validated.data);
+    await incrementStreak();
 
     if(!problem){
         redirect('/home/review');

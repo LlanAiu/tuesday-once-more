@@ -1,4 +1,4 @@
-import { FilterData, InputData, ProblemData, TopicData, TopicInput } from './data-structure';
+import { FilterData, InputData, ProblemData, TopicData, TopicInput, UserStatistics } from './data-structure';
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
 
@@ -43,6 +43,15 @@ try {
             tag_id INT,
             FOREIGN KEY (problem_id) REFERENCES problems(id),
             FOREIGN KEY (tag_id) REFERENCES topics(id)
+        );
+    `);
+
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS stats (
+            streak INT,
+            solved INT,
+            attempted INT,
+            lastSolved DATE
         );
     `);
 
@@ -358,6 +367,54 @@ export async function removeLinkedTopics(problem_id: number, topics: number[]){
                 WHERE problem_id = ${problem_id} AND tag_id = ${topic}
             `);
         }
+    } catch (error){
+        console.log(error);
+    }
+}
+
+export async function updateStreak(){
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    // let dateString = yesterday.getFullYear() + '-' + (yesterday.getMonth() + 1) + '-' + yesterday.getDate();
+
+    try {
+        const stats = await fetchStats();
+        if(stats){
+            if(stats.lastSolved.getTime() >= yesterday.getTime()){
+                await connection.query(`
+                    UPDATE stats
+                    SET streak = 0
+                `);
+            }
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function incrementStreak(){
+    try {
+        const stats = await fetchStats();
+        if(stats){
+            await connection.query(`
+                UPDATE stats
+                SET streak = ${stats.streak + 1}
+            `); 
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function fetchStats(){
+    try {
+        const [result, fields] = await connection.query({
+            sql: 'SELECT * FROM stats'
+        });
+
+        console.log(result);
+
+        return (result as Array<UserStatistics>)[0];
     } catch (error){
         console.log(error);
     }

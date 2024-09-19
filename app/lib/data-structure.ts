@@ -37,3 +37,10 @@ export type TopicInput = {
     name: string,
     description?: string
 }
+
+export type UserStatistics = {
+    solved: number,
+    attempted: number,
+    streak: number,
+    lastSolved: Date
+}
