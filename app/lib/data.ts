@@ -48,6 +48,7 @@ try {
 
     await connection.query(`
         CREATE TABLE IF NOT EXISTS stats (
+            id INT,
             streak INT,
             solved INT,
             attempted INT,
@@ -372,18 +373,33 @@ export async function removeLinkedTopics(problem_id: number, topics: number[]){
     }
 }
 
+export async function startStats(){
+    const stats = await fetchStats();
+    if(stats){
+        return;
+    }
+    try {
+        await connection.query(`
+            INSERT INTO stats (id, streak, solved, attempted, lastSolved)
+            VALUES (0, 0, 0, 0, DATE '2024-01-01')
+        `);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export async function updateStreak(){
     let yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    // let dateString = yesterday.getFullYear() + '-' + (yesterday.getMonth() + 1) + '-' + yesterday.getDate();
 
     try {
         const stats = await fetchStats();
         if(stats){
-            if(stats.lastSolved.getTime() >= yesterday.getTime()){
+            if(stats.lastSolved.getTime() <= yesterday.getTime()){
                 await connection.query(`
                     UPDATE stats
                     SET streak = 0
+                    WHERE id = 0
                 `);
             }
         }
@@ -393,12 +409,20 @@ export async function updateStreak(){
 }
 
 export async function incrementStreak(){
+    const today = new Date();
+    const dateString = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
+    function sameDay(d1: Date, d2: Date){
+        return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
+    }
+    
     try {
         const stats = await fetchStats();
-        if(stats){
+        if(stats && !sameDay(stats.lastSolved, new Date())){
             await connection.query(`
                 UPDATE stats
-                SET streak = ${stats.streak + 1}
+                SET streak = ${stats.streak + 1}, lastSolved = DATE '${dateString}'
+                WHERE id = 0
             `); 
         }
     } catch (error) {
@@ -412,9 +436,29 @@ export async function fetchStats(){
             sql: 'SELECT * FROM stats'
         });
 
-        console.log(result);
-
         return (result as Array<UserStatistics>)[0];
+    } catch (error){
+        console.log(error);
+    }
+}
+
+export async function updateProblemCount(correct: boolean){
+    try {
+        const stats = await fetchStats();
+        if(stats){
+            if(correct){
+                await connection.query(`
+                    UPDATE stats
+                    SET solved = ${stats.solved + 1}
+                    WHERE id = 0
+                `);
+            }
+            await connection.query(`
+                UPDATE stats
+                SET attempted = ${stats.attempted + 1}
+                WHERE id = 0
+            `);
+        }
     } catch (error){
         console.log(error);
     }

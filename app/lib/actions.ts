@@ -3,7 +3,7 @@
 import z from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { addLinkedTopics, createProblem, createTopic, deleteProblemById, deleteTopicById, editProblembyId, editTopicById, fetchProblemByFilterData, incrementStreak, removeLinkedTopics } from './data';
+import { addLinkedTopics, createProblem, createTopic, deleteProblemById, deleteTopicById, editProblembyId, editTopicById, fetchProblemByFilterData, incrementStreak, removeLinkedTopics, updateProblemCount } from './data';
 
 const schema = z.object({
     title: z.string(),
@@ -241,3 +241,9 @@ export type TopicState = {
     },
     message?: string | null
 };
+
+export async function addProblemAttempted(correct: boolean){
+    await incrementStreak();
+    await updateProblemCount(correct);
+    redirect('/home');
+}

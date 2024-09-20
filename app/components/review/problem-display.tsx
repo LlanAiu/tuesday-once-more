@@ -2,6 +2,8 @@
 
 import { ProblemData } from '@/app/lib/data-structure';
 import { useState } from 'react';
+import Correct from './correct';
+import Incorrect from './incorrect';
 
 export default function ProblemDisplay({ problem }: { problem: ProblemData }){
     const [toggleSolution, setToggleSolution] = useState(false);
@@ -36,8 +38,10 @@ export default function ProblemDisplay({ problem }: { problem: ProblemData }){
                         </p>
                         <div className='text-right text-sm mr-4'>
                             <p className='text-slate-600 mb-2'><b>Did you get this question correct?</b></p>
-                            <button className='inline-block w-12 p-2 rounded-md mx-3 bg-slate-100 hover:bg-green-400'>Yes</button>
-                            <button className='inline-block w-12 p-2 rounded-md mx-3 bg-slate-100 hover:bg-red-400'>No</button>
+                            <div className='space-x-3'>
+                                <Correct text='Yes' />
+                                <Incorrect text='No' />
+                            </div>
                         </div>
                     </div>
                 )}
