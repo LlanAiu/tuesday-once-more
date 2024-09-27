@@ -44,3 +44,7 @@ export type UserStatistics = {
     streak: number,
     lastSolved: Date
 }
+
+export type CountReturn = {
+    'COUNT(*)': number
+}

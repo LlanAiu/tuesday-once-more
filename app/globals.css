@@ -27,3 +27,11 @@ body {
     text-wrap: balance;
   }
 }
+
+.w-inherit {
+  width: inherit;
+}
+
+.h-pagination {
+  height: calc(100vh - 3rem);
+}

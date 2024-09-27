@@ -1,9 +1,9 @@
-import { FilterData, InputData, ProblemData, TopicData, TopicInput, UserStatistics } from './data-structure';
+import { CountReturn, FilterData, InputData, ProblemData, TopicData, TopicInput, UserStatistics } from './data-structure';
 import mysql from 'mysql2/promise';
 import 'dotenv/config';
 
 let connection : mysql.Connection;
-const PROBLEMS_PER_PAGE = 5;
+const PROBLEMS_PER_PAGE = 4;
 
 try {
     connection = await mysql.createConnection({
@@ -175,8 +175,8 @@ export async function fetchProblemPages(query: string){
         });
 
         console.log(result);
-        const totalProblems = (result as Array<Number>)[0];
-        return Math.ceil(totalProblems.valueOf() / PROBLEMS_PER_PAGE);
+        const totalProblems = (result as Array<CountReturn>)[0];
+        return Math.ceil(totalProblems['COUNT(*)'] / PROBLEMS_PER_PAGE);
     } catch(error) {
         console.log(error);
     }
