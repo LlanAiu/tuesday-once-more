@@ -4,6 +4,9 @@ import 'dotenv/config';
 
 let connection : mysql.Connection;
 const PROBLEMS_PER_PAGE = 4;
+const TOPICS_PER_PAGE = 5;
+const RECENT_TOPICS = 3;
+const RECENT_PROBLEMS = 2;
 
 try {
     connection = await mysql.createConnection({
@@ -199,6 +202,20 @@ export async function fetchProblemByPage(query: string, page: number){
     }
 }
 
+export async function fetchRecentProblems(){
+    try {
+        const [result, fields] = await connection.query({
+            sql: `SELECT * FROM problems ORDER BY id DESC LIMIT ${RECENT_PROBLEMS}`
+        });
+
+        console.log(result);
+
+        return (result as Array<ProblemData>);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export async function editProblembyId(id: number, problem: InputData){
     try {
         await connection.query(`
@@ -259,7 +276,7 @@ export async function fetchAllTopics(){
 export async function fetchTopics(query: string, page: number){
     try {
         const [result, fields] = await connection.query({
-            sql: `SELECT * FROM topics WHERE name LIKE '%${query}%' LIMIT ${PROBLEMS_PER_PAGE} OFFSET ${PROBLEMS_PER_PAGE * (page - 1)}`
+            sql: `SELECT * FROM topics WHERE name LIKE '%${query}%' LIMIT ${TOPICS_PER_PAGE} OFFSET ${TOPICS_PER_PAGE * (page - 1)}`
         });
 
         console.log(result);
@@ -301,6 +318,35 @@ export async function fetchTopicsByProblem(id: number){
     } catch (error) {
         console.log(error);
         return [];
+    }
+}
+
+export async function fetchRecentTopics(){
+    try {
+        const [result, fields] = await connection.query({
+            sql: `SELECT * FROM topics ORDER BY id DESC LIMIT ${RECENT_TOPICS}`
+        });
+
+        console.log(result);
+
+        return (result as Array<TopicData>);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export async function fetchTotalTopicPages(){
+    try {
+        const [result, fields] = await connection.query({
+            sql: 'SELECT COUNT(*) FROM topics'
+        });
+
+        console.log(result);
+
+        return Math.ceil((result as Array<CountReturn>)[0]['COUNT(*)'] / TOPICS_PER_PAGE);
+    } catch (error){
+        console.log(error);
+        return 0;
     }
 }
 

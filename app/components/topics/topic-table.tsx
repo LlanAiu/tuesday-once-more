@@ -11,9 +11,9 @@ export default function TopicTable({tags} : {tags: TopicData[]}){
                 return (
                     <div 
                         key={tag.id}
-                        className='flex p-2 w-full h-max my-2 border-2 border-gray-500'
+                        className='flex px-2 py-2.5 w-full h-max my-2 border-2 border-gray-500'
                     >
-                        <div className='flex-auto space-y-2'>
+                        <div className='flex-auto space-y-3'>
                             <p className='block'><b>{tag.name}</b></p>
                             <p className='block text-sm text-gray-700 overflow-ellipsis'>{tag.description}</p>
                         </div>
