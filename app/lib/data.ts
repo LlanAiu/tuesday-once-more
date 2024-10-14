@@ -5,7 +5,7 @@ import 'dotenv/config';
 let connection : mysql.Connection;
 const PROBLEMS_PER_PAGE = 4;
 const TOPICS_PER_PAGE = 5;
-const RECENT_TOPICS = 3;
+const RECENT_TOPICS = 2;
 const RECENT_PROBLEMS = 2;
 
 try {
